@@ -59,6 +59,7 @@ module Sidekiq
         :processor_count => 25,
         :server => ENV['REDISTOGO_URL'] || 'redis://localhost:6379/0',
         :rails => '.',
+        :namespace => '',
         :environment => 'production',
       }
 
@@ -68,6 +69,10 @@ module Sidekiq
           (weight || 1).times do
             @options[:queues] << q
           end
+        end
+
+        o.on "-n", "--namespace namespace", "Namespace for queues to process" do |arg|
+          @options[:namespace] = arg + ':'
         end
 
         o.on "-v", "--verbose", "Print more verbose output" do

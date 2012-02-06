@@ -19,12 +19,20 @@ module Sidekiq
 
     # Example usage:
     # Sidekiq::Client.push('my_queue', 'class' => MyWorker, 'args' => ['foo', 1, :bat => 'bar'])
-    def self.push(queue='default', item)
+    def self.push(*args)
+      if args.length == 1
+        item = args[0]
+        queue = 'default'
+        namespace = ''
+      else
+        queue, item, namespace = args
+      end
+
       raise(ArgumentError, "Message must be a Hash of the form: { 'class' => SomeClass, 'args' => ['bob', 1, :foo => 'bar'] }") unless item.is_a?(Hash)
       raise(ArgumentError, "Message must include a class and set of arguments: #{item.inspect}") if !item['class'] || !item['args']
 
       item['class'] = item['class'].to_s if !item['class'].is_a?(String)
-      redis.rpush("queue:#{queue}", MultiJson.encode(item))
+      redis.rpush("#{namespace}queue:#{queue}", MultiJson.encode(item))
     end
 
     # Please use .push if possible instead.

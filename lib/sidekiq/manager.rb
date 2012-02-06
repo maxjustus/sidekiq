@@ -23,6 +23,7 @@ module Sidekiq
       verbose options.inspect
       @count = options[:processor_count] || 25
       @queues = options[:queues]
+      @namespace = options[:namespace]
       @queue_idx = 0
       @queues_size = @queues.size
       @redis = Redis.connect(:url => location)
@@ -82,14 +83,18 @@ module Sidekiq
     private
 
     def find_work(queue_idx)
-      current_queue = @queues[queue_idx]
-      msg = @redis.lpop("queue:#{current_queue}")
+      msg = get_message(queue_idx)
       if msg
         processor = @ready.pop
         @busy << processor
         processor.process! MultiJson.decode(msg)
       end
       !!msg
+    end
+
+    def get_message(queue_idx)
+      current_queue = @queues[queue_idx]
+      msg = @redis.lpop("#{@namespace}queue:#{current_queue}")
     end
 
     def dispatch(schedule = false)
