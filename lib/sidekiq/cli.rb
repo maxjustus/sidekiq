@@ -71,7 +71,7 @@ module Sidekiq
           end
         end
 
-        o.on "-n", "--namespace namespace", "Namespace for queues to process" do |arg|
+        o.on "-n", "--namespace NAMESPACE", "Namespace for queues to process" do |arg|
           @options[:namespace] = arg + ':'
         end
 
