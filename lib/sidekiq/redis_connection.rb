@@ -3,7 +3,7 @@ require 'connection_pool'
 module Sidekiq
   class RedisConnection
     def self.create(url = nil, namespace = nil, pool = true)
-      @ns ||= namespace
+      @namespace ||= namespace
       @url ||= url
       if pool
         ConnectionPool.new { connect }
@@ -14,7 +14,7 @@ module Sidekiq
 
     def self.connect
       r = Redis.connect(:url => @url)
-      if @ns
+      if namespace
         Redis::Namespace.new(ns, r)
       else
         r
@@ -22,7 +22,7 @@ module Sidekiq
     end
 
     def self.namespace
-      @namespace || ''
+      @namespace
     end
 
     def self.url
