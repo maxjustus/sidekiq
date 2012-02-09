@@ -16,6 +16,7 @@ module Sidekiq
 
     def self.connect
       r = Redis.connect(:url => url)
+
       if namespace
         Redis::Namespace.new(namespace, :redis => r)
       else
