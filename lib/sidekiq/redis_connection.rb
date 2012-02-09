@@ -6,6 +6,7 @@ module Sidekiq
     def self.create(url = nil, namespace = nil, pool = true)
       @namespace = namespace ? namespace : nil
       @url = url ? url : nil
+
       if pool
         ConnectionPool.new { connect }
       else
