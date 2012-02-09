@@ -30,9 +30,5 @@ module Sidekiq
     def self.url
       @url || ENV['REDISTOGO_URL'] || 'redis://localhost:6379/0'
     end
-
-    def self.namespace=(namespace)
-      @namespace = namespace
-    end
   end
 end
